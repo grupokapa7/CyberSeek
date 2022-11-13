@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly REQUIREMENTS=("jq" "telnet" "curl" "host" "whois" "dig" "awk" "grep" "sed")
+readonly REQUIREMENTS=("jq" "curl" "host" "whois" "dig" "awk" "grep" "sed")
 
 function requires() {
    local arr=("$@")
