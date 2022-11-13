@@ -1,7 +1,7 @@
 # CyberSeek
 this is an OSINT tool that helps you with the following activities:
 
--Search information about an IP (reputacion with Kaspersky and Fortinet, malware activity, domains related with these IP, open ports, vulns)
+-Search information about an IP (reputacion with Kaspersky and Fortinet, malware activity, domains related with that IP, open ports, vulns)
 -Search information about domain (reputacion with Kaspersky and Fortinet, malware activity, subdomains and A DNS registers list, some emails enumeration, 
                                   resolution IPs history, DNS registers like MX,A,TXT,NS and SOA )
 -Search information about hostname (reputacion with Kaspersky and Fortinet, malware activity, resolution IP history, load balancer detection)
