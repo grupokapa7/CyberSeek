@@ -20,8 +20,8 @@ VirusTotalToken=$VirusTotalAPI #https://virustotal.com
 KasperskyTIPToken=$KasperskyTIPAPI #https://opentip.kaspersky.com
 vpnapiToken=$vpnapiAPI #https://vpnapi.io/
 realemailToken=$realemailAPI #https://isitarealemail.com
-hunterToken=$hunterAPI
-FindThatLeadToken=$FindThatLeadID
+hunterToken=$hunterAPI #https://hunter.io
+FindThatLeadToken=$FindThatLeadID #https://app.findthatlead.com
 
 
 author="Adonis Izaguirre"
@@ -49,7 +49,7 @@ cNothing='\033[0m'
 
 
 function banner0(){
-	echo -e $cDarkGray"""
+	echo -e $cNothing"""
   .oooooo.                .o8                           .oooooo..o                     oooo        
  d8P'  'Y8b              '888                          d8P'    'Y8                     '888        
 888          oooo    ooo  888oooo.   .ooooo.  oooo d8b Y88bo.       .ooooo.   .ooooo.   888  oooo  
@@ -64,7 +64,7 @@ By: $cRed$author$cDarkGray email: $cRed$myemail$cNothing """
 }
 
 function banner1(){
-	echo -e $cDarkGray"""
+	echo -e $cNothing"""
  ::::::::  :::   ::: :::::::::  :::::::::: :::::::::   ::::::::  :::::::::: :::::::::: :::    ::: 
 :+:    :+: :+:   :+: :+:    :+: :+:        :+:    :+: :+:    :+: :+:        :+:        :+:   :+:  
 +:+         +:+ +:+  +:+    +:+ +:+        +:+    +:+ +:+        +:+        +:+        +:+  +:+   
@@ -78,7 +78,7 @@ By: $cRed$author$cDarkGray email: $cRed$myemail$cNothing """
 function menu(){
 	while  true
 	do
-		echo -e $cDarkGray"\n=============== menu ===================="
+		echo -e $cNothing"\n=============== menu ===================="
 		echo "[1] Search IP"
 		echo "[2] Search Domain info"
 		echo "[3] Search hostname"
@@ -385,6 +385,10 @@ function KasperskyDomainCheck(){
 				KasperskyTIPMessage="No data or not enough information is available."
 				Color=$cLightGray	
 				;;
+				"Orange")
+				KasperskyTIPMessage="classified as Malware."
+				Color=$cLightGray	
+				;;
 		esac 
 		echo -e $cDarkGray"This Domain is on "$Color$Domainzone$cDarkGray" zone by Kaspersky, "$KasperskyTIPMessage$cNothing
 	fi;
@@ -417,6 +421,10 @@ function KasperskyIPCheck(){
 				KasperskyTIPMessage="No data or not enough information is available."
 				Color=$cLightGray	
 				;;
+				"Orange")
+				KasperskyTIPMessage="classified as Malware."
+				Color=$cLightGray	
+				;;
 		esac 
 		echo -e $cDarkGray"This IP is on "$Color$IPzone$cDarkGray" zone by Kaspersky, "$KasperskyTIPMessage$cNothing
 	fi;
@@ -424,7 +432,7 @@ function KasperskyIPCheck(){
 
 function GetEmails(){
    HDomain=$1
-	echo -e $cBlue"Hunter.io: Looking for emails for "$HDomain$cNothing
+	echo -e $cBlue"\nHunter.io: Looking for emails for "$HDomain$cNothing
 	if [ "$hunterToken" = "" ];then
 		echo -e $cRed"Any API key found, you need to set an API key in api.config file to use this function. See https://hunter.io"$cNothing
 	else
