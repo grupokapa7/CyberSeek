@@ -86,27 +86,27 @@ function menu(){
 		echo "[5] Emails enumeration by Domain"
 		echo "[6] Exit"
 		echo -e "=============== menu ===================="$cNothing
-		read -p "option: " option
+		read -e -p "option: " option
 
 		case $option in 
 			"1")
-			read -p "enter IP (8.8.8.8): " ip
+			read -e -p "enter IP (8.8.8.8): " ip
 			searchByIP $ip 1
 			;;
 			"2")
-			read -p "enter Domain (example.com): " domain
+			read -e -p "enter Domain (example.com): " domain
 			searchByDomain $domain
 			;;
 			"3")
-			read -p "enter hostname (mail.example.com): " hostname 
+			read -e -p "enter hostname (mail.example.com): " hostname 
 			searchByHostname $hostname
 			;;
 			"4")
-			read -p "enter email (test@example.com):" email
+			read -e -p "enter email (test@example.com):" email
 			verifyEmail $email
 			;;
 			"5")
-			read -p "enter Domain (example.com):" domain
+			read -e -p "enter Domain (example.com):" domain
 			GetEmails $domain
 			;;
 			"6")
