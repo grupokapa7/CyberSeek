@@ -200,6 +200,8 @@ function searchByDomain(){
 		do
 			echo -e $cDarkGray"\n---------------------- Details ----------------------"$cNothing
 			echo -e "Subdomain: "$cGreen$line$cNothing
+			VirusTotalDomainCheck $line
+			echo ""
 			hostIP=$(host $line | awk '{print $4}' | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
 			if [ -n "$hostIP" ]; then
 				LoadBalancer=$(host $line | awk '{print $4}' | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | wc -l)
@@ -218,7 +220,7 @@ function searchByDomain(){
 				fi;
 			
 			else
-    			echo -e $cRed"Could not resolve hostname."$cNothing
+    			echo -e $cRed"Today: Could not resolve hostname."$cNothing
 			fi
 
 		done < domains.list
