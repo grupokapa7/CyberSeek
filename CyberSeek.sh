@@ -387,7 +387,7 @@ function KasperskyDomainCheck(){
 				;;
 				"Orange")
 				KasperskyTIPMessage="classified as Malware."
-				Color=$cLightGray	
+				Color=$cOrange	
 				;;
 		esac 
 		echo -e $cDarkGray"This Domain is on "$Color$Domainzone$cDarkGray" zone by Kaspersky, "$KasperskyTIPMessage$cNothing
@@ -423,7 +423,7 @@ function KasperskyIPCheck(){
 				;;
 				"Orange")
 				KasperskyTIPMessage="classified as Malware."
-				Color=$cLightGray	
+				Color=$cOrange	
 				;;
 		esac 
 		echo -e $cDarkGray"This IP is on "$Color$IPzone$cDarkGray" zone by Kaspersky, "$KasperskyTIPMessage$cNothing
