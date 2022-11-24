@@ -1,18 +1,31 @@
-# CyberSeek
-this is an OSINT tool that helps you with the following activities:
 
--Search information about an IP (reputacion with Kaspersky and Fortinet, malware activity, domains related with that IP, open ports, vulns)
--Search information about domain (reputacion with Kaspersky and Fortinet, malware activity, subdomains and A DNS registers list, some emails enumeration, 
-                                  resolution IPs history, DNS registers like MX,A,TXT,NS and SOA )
--Search information about hostname (reputacion with Kaspersky and Fortinet, malware activity, resolution IP history, load balancer detection)
--email validation (check if an email exist)
+Herramienta de OSINT que ayuda con las siguientes actividades:
 
+1.- Búsqueda de IP
+        Reputación de IP (Kaspersky / Fortinet)
+        Actividad de malware
+        Dominios relacionados con dicha IP
+        Puertos abiertos (pasivo)
+        Vulnerabilidades (pasivo)
+2.- Búsqueda de dominio
+        Reputación del Dominio (Kaspersky / Fortinet)
+        Actividad de malware
+        Enumeración de registros A y subdominios
+        Enumeración de correos electrónicos
+        Detección de balanceador de carga
+        Registros MX, TXT, NS, SOA, A
 
-some APIs are required for modules (Kaspersky, malware activity, email enumeration, subdomain enumeration)
-the api.config file stores your tokens for each account, you can get your tokens from the following site:
-    Kaspersky site https://opentip.kaspersky.com
-    VirusTotal site https://virustotal.com
-    VPNApi site https://vpnapi.io/
-    RealEmail https://isitarealemail.com
-    Hunter https://hunter.io
-    FindThatLead https://app.findthatlead.com
+3.- otros
+        Validación de correos electrónicos (si existe o no)
+        Revisión de SPF
+        Revisión de IP o Dominio en Blacklist (actividad de spam)
+
+Algunas APIs son necesarias para el funcionamiento de algunos módulos, puede obtenerlo en los siguientes sitios:
+Kaspersky= https://opentip.kaspersky.com 
+Virus Total= https://virustotal.com 
+VPN API=  https://vpnapi.io/
+Real Email= https://isitarealemail.com 
+Hunter io= https://hunter.io
+FindThatLead= https://app.findthatlead.com
+
+Al crear el token en dichos sitios, puede agregarlos en el archivo api.config ejemplo(VirusTotalAPI="<TOKEN>")
