@@ -7,6 +7,7 @@ Herramienta de OSINT que ayuda con las siguientes actividades:
         Dominios relacionados con dicha IP
         Puertos abiertos (pasivo)
         Vulnerabilidades (pasivo)
+        
 2.- Búsqueda de dominio
         Reputación del Dominio (Kaspersky / Fortinet)
         Actividad de malware
