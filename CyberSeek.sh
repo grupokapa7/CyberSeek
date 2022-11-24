@@ -84,7 +84,9 @@ function menu(){
 		echo "[3] Search hostname"
 		echo "[4] Verify email"
 		echo "[5] Emails enumeration by Domain"
-		echo "[6] Exit"
+		echo "[6] Blacklist check"
+		echo "[7] SPF Check"
+		echo "[8] Exit"
 		echo -e "=============== menu ===================="$cNothing
 		read -e -p "option: " option
 
@@ -110,6 +112,14 @@ function menu(){
 			GetEmails $domain
 			;;
 			"6")
+			read -e -p "enter Domain or IP :" domainOrIP
+			BlacklistCheck $domainOrIP
+			;;
+			"7")
+			read -e -p "enter Domain (example.com):" spfDomain1
+			spfCheck $spfDomain1
+			;;
+			"8")
 			echo "quitting..."
 			break
 			;;
@@ -128,10 +138,10 @@ function searchByDomain(){
 	echo "======================== Domain INFO ========================"
 	echo -e $cBlue"Processing whois query for Domain "$domain"..."$cNothing
 	whois $domain > whois-domain.txt
-	echo -e "Creation Date:"$cGreen$(cat whois-domain.txt | grep "Creation Date:" | sed -n -e 1p | awk -F 'Creation Date:' '/Creation Date: /{print $2}')$cNothing
-	echo -e "ExpirationDate:"$cGreen$(cat whois-domain.txt | grep "Expiration Date" | awk '{print $5}')$cNothing
+	echo -e "Creation Date:"$cGreen$(cat whois-domain.txt | grep -E "Creation Date:|Registration Time:" | sed -n -e 1p | awk -F 'Creation Date:|Registration Time:' '/Creation Date:|Registration Time: /{print $2}')$cNothing
+	echo -e "ExpirationDate:"$cGreen$(cat whois-domain.txt | grep -E "Expiration Date|Expiration Time:" | awk '{print $5}')$cNothing
 	echo -e "Registrar:"$cGreen$(cat whois-domain.txt  | grep "Registrar:" | sed -n -e 1p | awk -F 'Registrar:' '/Registrar: /{print $2}')$cNothing
-	echo -e "Registrant Email:"$cGreen$(cat whois-domain.txt  | grep "Registrant Email:" | awk -F 'Registrant Email:' '/Registrant Email: /{print $2}'  | grep -E '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b')$cNothing
+	echo -e "Registrant Email:"$cGreen$(cat whois-domain.txt  | grep -E "Registrant Email:|Registrant Contact Email:" | awk -F 'Registrant Email:|Registrant Contact Email:' '/Registrant Email:|Registrant Contact Email: /{print $2}'  | grep -E '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b')$cNothing
 	echo -e "Registrant City:"$cGreen$(cat whois-domain.txt  | grep "Registrant City:" | awk -F 'Registrant City:' '/Registrant City: /{print $2}' | sed -n -e 1p)$cNothing
 	echo -e "Registrant State:"$cGreen$(cat whois-domain.txt  | grep "Registrant State\/Province:" | awk -F 'Registrant State\/Province:' '/Registrant State\/Province: /{print $2}' | sed -n -e 1p)$cNothing
 	echo -e "Registrant Country:"$cGreen$(cat whois-domain.txt  | grep "Registrant Country:" | awk -F 'Registrant Country:' '/Registrant Country: /{print $2}' | sed -n -e 1p)$cNothing
@@ -166,6 +176,10 @@ function searchByDomain(){
 	echo "======================== NS Registers  ========================"
 	echo -e $cOrange
 	host -t NS $domain
+	echo -e $cNothing
+	echo "======================== SPF Check  ========================"
+	echo -e $cOrange
+	spfCheck $domain
 	echo -e $cNothing
 
 
@@ -242,7 +256,7 @@ function searchByIP(){
 	echo -e "AS: "$cPurple$(cat whois-ip.txt | grep "aut-num:" | awk '{print $2}')$cNothing
 	echo -e "Responsible: "$cPurple$(cat whois-ip.txt | grep "responsible:" | awk -F 'responsible:' '/responsible: /{print $2}')$cNothing
 	echo -e "PTR: "$cPurple$(dig -x $ip +short)$cNothing
-	echo -e "Org: "$cPurple$(cat whois-ip.txt | grep -E 'Organization:|owner:' | awk -F'owner:|Organization:' '/owner:|Organization: /{print $2}')$cNothing
+	echo -e "Org: "$cPurple$(cat whois-ip.txt | grep -E 'Organization:|owner:|org-name:' | awk -F'owner:|Organization:|org-name:' '/owner:|Organization:|org-name: /{print $2}')$cNothing
 	echo -e "Country: "$cPurple$(cat whois-ip.txt | grep -E 'Country:|country:' | sed -n -e 1p | awk '{print $2}')$cNothing
 	echo -e "City: "$cPurple$(cat whois-ip.txt | grep -E 'City:|city:' | awk '{print $2}')$cNothing
 
@@ -333,29 +347,29 @@ function VirusTotalDomainCheck(){
 	else
 		curl -s -X GET 'https://www.virustotal.com/vtapi/v2/domain/report?apikey='$VirusTotalToken'&domain='$vDomain > virusTotal.txt
 		detected_urlsRow=$(cat virusTotal.txt | jq -r '.detected_urls' | jq length)
-		count=0
+		vtcount=0
 		((detected_urlsRow--))
 		echo -e $cBlue"\nMalicious activity report"$cNothing
-		while [ $count -le $detected_urlsRow ]
+		while [ $vtcount -le $detected_urlsRow ]
 		do
-			url=$(cat virusTotal.txt | jq -r '.detected_urls['$count'].url')
-			positives=$(cat virusTotal.txt | jq -r '.detected_urls['$count'].positives')
-			total=$(cat virusTotal.txt | jq -r '.detected_urls['$count'].total')
-			scan_date=$(cat virusTotal.txt | jq -r '.detected_urls['$count'].scan_date')
+			url=$(cat virusTotal.txt | jq -r '.detected_urls['$vtcount'].url')
+			positives=$(cat virusTotal.txt | jq -r '.detected_urls['$vtcount'].positives')
+			total=$(cat virusTotal.txt | jq -r '.detected_urls['$vtcount'].total')
+			scan_date=$(cat virusTotal.txt | jq -r '.detected_urls['$vtcount'].scan_date')
 			echo -e "At "$cDarkGray$scan_date$cNothing" this domain was detected for "$cDarkGray$positives"/"$total$cNothing" AV engines with url: {"$url"}"
-			((count++))
+			((vtcount++))
 		done
 
 		echo -e $cBlue"\nResolution IPs history..."$cNothing
 		resolutionsRows=$(cat virusTotal.txt | jq -r ".resolutions" | jq length)
-		count=0
+		vtcount=0
 		((resolutionsRows--))
-		while [ $count -le $resolutionsRows ]
+		while [ $vtcount -le $resolutionsRows ]
 		do
-			last_resolved=$(cat virusTotal.txt | jq -r '.resolutions['$count'].last_resolved')
-			ip_address=$(cat virusTotal.txt | jq -r '.resolutions['$count'].ip_address')
+			last_resolved=$(cat virusTotal.txt | jq -r '.resolutions['$vtcount'].last_resolved')
+			ip_address=$(cat virusTotal.txt | jq -r '.resolutions['$vtcount'].ip_address')
 			echo -e "At "$cDarkGray$last_resolved$cNothing" this domain was detected with IP: "$cDarkGray$ip_address$cNothing
-			((count++))
+			((vtcount++))
 		done
 	fi;
 }
@@ -456,6 +470,65 @@ function GetEmails(){
 	echo -e "}"$cNothing
 
 
+}
+
+function BlacklistCheck(){
+	bDomainOrIP=$1
+	curl -s -k -X GET 'https://mxtoolbox.com/api/v1/Lookup?command=blacklist&argument='$bDomainOrIP'&resultindext=1&disableRhsbl=true&format=1' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0' -H 'TempAuthorization: 27eea1cd-e644-4b7b-bebe-38010f55dab3' > blacklist.txt
+	echo -e $cBlue"\nChecking if this Domain or IP has been used for spam activity..."$cNothing
+
+	blacklistRows=$(cat blacklist.txt | jq -r ".ResultDS.SubActions" | jq length)
+	blcount=0
+	((blacklistRows--))
+	while [ $blcount -le $blacklistRows ]
+	do
+		blStatus=$(cat blacklist.txt | jq -r '.ResultDS.SubActions['$blcount'].Status')
+		blName=$(cat blacklist.txt | jq -r '.ResultDS.SubActions['$blcount'].Name')
+
+		case $blStatus in 
+				"0")
+				echo -e "Checking on "$cBlue$blName$cNothing" - "$cGreen"Clean"$cNothing
+				;;
+				"1")
+				echo -e "Checking on "$cBlue$blName$cNothing" - "$cYellow"TimeOut"$cNothing
+				;;
+				"2")
+				echo -e "Checking on "$cBlue$blName$cNothing" - "$cRed"Listed!"$cNothing
+				;;
+		esac 
+		((blcount++))
+	done
+}
+
+function spfCheck(){
+	spfDomain=$1
+	curl -s -k -X GET 'https://mxtoolbox.com/api/v1/Lookup?command=spf&argument='$spfDomain'&resultindext=2&disableRhsbl=true&format=1' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0' -H 'TempAuthorization: 27eea1cd-e644-4b7b-bebe-38010f55dab3' > spf.txt
+	echo -e $cBlue"\nChecking SPF for domain "$spfDomain$cNothing
+
+	echo -e "SPF detected: "$cOrange$(dig txt $spfDomain +short | grep 'spf')$cNothing
+
+	spfRows=$(cat spf.txt | jq -r ".ResultDS.SubActions" | jq length)
+	spfCount=0
+	((spfRows--))
+	while [ $spfCount -le $spfRows ]
+	do
+		spfStatus=$(cat spf.txt | jq -r '.ResultDS.SubActions['$spfCount'].Status')
+		spfName=$(cat spf.txt | jq -r '.ResultDS.SubActions['$spfCount'].Name')
+		spfResponse=$(cat spf.txt | jq -r '.ResultDS.SubActions['$spfCount'].Response')
+
+		case $spfStatus in 
+				"0")
+				echo -e "Checking module "$cBlue$spfName$cNothing" - "$cGreen$spfResponse$cNothing
+				;;
+				"1")
+				echo -e "Checking module "$cBlue$spfName$cNothing" - "$cYellow"TimeOut"$cNothing
+				;;
+				"2")
+				echo -e "Checking module "$cBlue$spfName$cNothing" - "$cRed$spfResponse$cNothing
+				;;
+		esac 
+		((spfCount++))
+	done
 }
 
 function verifyEmail(){
