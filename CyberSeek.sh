@@ -154,7 +154,7 @@ function searchByDomain(){
 
 	KasperskyDomainCheck $domain
 	echo -e $cBlue"Checking Domain reputation in Fortinet..."$cNothing
-	FortiguardQuery=$(curl -s -k -X POST 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Cookie: cookiesession1=678A3E0F545A286575FCE041E889A05F; fastapi-csrf-token=ImFkOGYxYzFmZTI3YTEwNmYyZWU2ODhkYmRlMWUyODFmMWYwMTZkZjki.Y-vfqA.yrfZbT2GsztLFkvsVrsJoa0UgV0; privacy_agreement=true' --data-raw "url=$domain&ver=9"| grep '<h4 class="info_title">Category:' | awk -F '<h4 class="info_title">Category:' '/<h4 class="info_title">Category: /{print $2}' | sed 's,</h4>,,g' )
+	FortiguardQuery=$(curl -s -k 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -c FG-cookie.txt | curl -s -k -X POST 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -H 'Content-Type: application/x-www-form-urlencoded' -b FG-cookie.txt --data-raw "url=$domain&ver=9" | grep '<h4 class="info_title">Category:' | awk -F '<h4 class="info_title">Category:' '/<h4 class="info_title">Category: /{print $2}' | sed 's,</h4>,,g' )
 	echo -e "This Domain is on category:"$cDarkGray$FortiguardQuery$cNothing" by Fortinet"
 
 	VirusTotalDomainCheck $domain
@@ -299,7 +299,7 @@ function searchByIP(){
 	
 
 	KasperskyIPCheck $ip
-	FortiguardQuery=$(curl -s -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' 'https://www.fortiguard.com/webfilter?q='$ip'&version=9' | grep '<h4 class="info_title">Category:' | awk -F '<h4 class="info_title">Category:' '/<h4 class="info_title">Category: /{print $2}' | sed 's,</h4>,,g' )
+	FortiguardQuery=$(curl -s -k 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -c FG-cookie.txt | curl -s -k -X POST 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -H 'Content-Type: application/x-www-form-urlencoded' -b FG-cookie.txt --data-raw "url=$ip&ver=9" | grep '<h4 class="info_title">Category:' | awk -F '<h4 class="info_title">Category:' '/<h4 class="info_title">Category: /{print $2}' | sed 's,</h4>,,g' )
 	echo -e "This IP is on category: "$cDarkGray$FortiguardQuery$cNothing" by Fortinet"
 
 
@@ -309,7 +309,7 @@ function searchByHostname(){
 	hostname=$1
 
 	KasperskyDomainCheck $hostname
-	FortiguardQuery=$(curl -s -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' 'https://www.fortiguard.com/webfilter?q='$hostname'&version=9' | grep '<h4 class="info_title">Category:' | awk -F '<h4 class="info_title">Category:' '/<h4 class="info_title">Category: /{print $2}' | sed 's,</h4>,,g' )
+	FortiguardQuery=$(curl -s -k 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -c FG-cookie.txt | curl -s -k -X POST 'https://www.fortiguard.com/webfilter' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0' -H 'Content-Type: application/x-www-form-urlencoded' -b FG-cookie.txt --data-raw "url=$hostname&ver=9" | grep '<h4 class="info_title">Category:' | awk -F '<h4 class="info_title">Category:' '/<h4 class="info_title">Category: /{print $2}' | sed 's,</h4>,,g' )
 	echo -e "This hostname is on category: "$cDarkGray$FortiguardQuery$cNothing" by Fortinet"
 
 	VirusTotalDomainCheck $hostname
