@@ -24,7 +24,7 @@ hunterToken=$hunterAPI #https://hunter.io
 FindThatLeadToken=$FindThatLeadID #https://app.findthatlead.com
 
 
-author="Adonis Izaguirre"
+author="sp34rh34d"
 myemail="adonis.izaguirre@kapa7.com"
 
 
