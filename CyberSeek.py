@@ -34,12 +34,24 @@ def get_dns_resolution_ip(ip):
     shodan_result=Shodan.check_resolution_ip(ip)
 
     results=[]
-    for x in virustotal_result:
-        results.append(x)
-    for x in alienvault_result:
-        results.append(x)
-    for x in shodan_result:
-        results.append(x)
+    try:
+        for x in virustotal_result:
+            results.append(x)
+    except:
+        pass
+   
+    try:
+        for x in alienvault_result:
+            results.append(x)
+    except:
+        pass
+    
+    try:
+        for x in shodan_result:
+            results.append(x)
+    except:
+        pass
+    
 
     header=["Engine","Hostname"]
     print(tabulate(results, header,  tablefmt="grid",numalign="left",showindex=True,floatfmt=".2f"))
