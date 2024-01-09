@@ -11,6 +11,7 @@ from core.Shodan import *
 from core.DNSInfo import *
 from core.Validator import *
 from tabulate import tabulate
+from core.MalwareBazaar import *
 
 Banner.CyberSeekBanner()
 
@@ -19,7 +20,7 @@ def MainMenu():
 [{c.Red}2{c.Reset}] Domain reputation
 [{c.Red}3{c.Reset}] Hostname reputation
 [{c.Red}4{c.Reset}] Url analysis
-[{c.Red}5{c.Reset}] File analysis (sha256/sha512)
+[{c.Red}5{c.Reset}] File analysis (md5/sha256/sha512)
 [{c.Red}6{c.Reset}] Blacklist check
 [{c.Red}7{c.Reset}] Whois info
 [{c.Red}8{c.Reset}] SPF check
@@ -106,15 +107,16 @@ while True:
             VirusTotal.check_url(value)
 
     elif option=="5": #File Analisys 
-        hash=input("Enter hash (sha256/sha512): ")
+        hash=input("Enter hash (md5/sha256/sha512): ")
         value=hash.replace(" ","")
         if not validator.hash(value):
-            print(f"{c.Red}Invalid hash!{c.Reset}")
+            pass
         else:
             KasperskyOpenTIP.check_file(value)
             VirusTotal.check_file(value)
             VirusTotal.check_contacted_urls(value)
             VirusTotal.check_contacted_domains(value)
+            MalwareBazaar.hash_lookup(value)
 
     elif option=="6": #Blacklist check
         domain_ip=input("Enter domain/ip: ")

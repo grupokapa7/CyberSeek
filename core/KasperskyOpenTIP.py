@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from core.core import *
 from fake_useragent import UserAgent
-from tabulate import tabulate
+from tabulate import tabulate 
 
 class KasperskyOpenTIP_zones:
     zones = {
