@@ -257,7 +257,6 @@ class VirusTotal:
                 'Accept-Ianguage': 'en-US,en;q=0.9,es;q=0.8'
                 }
             response = requests.get(url_session,headers=headers)
-            print(response.text)
 
             if response.status_code==200:
                 data=response.json()

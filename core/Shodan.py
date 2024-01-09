@@ -70,19 +70,21 @@ class Shodan:
 
                         try:
                             vuls=[]
-                            for vul in data['vulns']:
-                                row=[vul]
-                                vuls.append(row)
+                            try:
+                                for vul in data['vulns']:
+                                    row=[vul]
+                                    vuls.append(row)
 
-                            header=["Vulnerabilities"]
-                            print(tabulate(vuls, header,  tablefmt="grid",numalign="left",showindex=True,floatfmt=".2f"))
-                            
+                                header=["Vulnerabilities"]
+                                print(tabulate(vuls, header,  tablefmt="grid",numalign="left",showindex=True,floatfmt=".2f"))
+                            except:
+                                pass        
                         except:
                             pass
                         
 
             except:
-                print(f"{c.Red}Error no ip detected!{c.Reset}")
+                print(f"{c.Red}Error no ip data detected!{c.Reset}")
                 pass
 
         except:

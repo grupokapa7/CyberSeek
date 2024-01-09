@@ -1,5 +1,6 @@
 import re
 import ipaddress
+from core.MalwareBazaar import *
     
 class validator:
     
@@ -48,8 +49,9 @@ class validator:
             sha256_pattern = re.compile(r'^[a-fA-F0-9]{64}$')
             sha512_pattern = re.compile(r'^[a-fA-F0-9]{128}$')
                 
-            #if bool(md5_pattern.match(value)):
-            #    return True
+            if bool(md5_pattern.match(value)):
+                MalwareBazaar.hash_lookup(value)
+                return False
             if bool(sha256_pattern.match(value)):
                 return True
             elif bool(sha512_pattern.match(value)):
@@ -57,4 +59,5 @@ class validator:
             else:
                 return False   
         except:
+            print(f"{c.Red}Invalid hash!{c.Reset}")
             return False
