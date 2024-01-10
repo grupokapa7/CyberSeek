@@ -4,6 +4,7 @@
 ```
 git clone https://github.com/sp34rh34d/CyberSeek.git
 pip3 install -r requirements.txt
+cd CyberSeek && chmod +x CyberSeek.py
 ```
 ### CyberSeek Features
 * IP Reputation Lookup(VT/Kaspersky/AlienVault/Shodan)
