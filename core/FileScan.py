@@ -1,7 +1,7 @@
 import requests
 from tabulate import tabulate
 from core.core import *
-from urllib.parse import quote
+import time
 
 class FileScan:
     def send_file(filename):
@@ -214,7 +214,8 @@ class FileScan:
                     except:
                         pass
 
-            url=f"https://www.filescan.io/api/scan/{task_id}/report?filter=f:emulationData"
+            time.sleep(3)
+            url=f"https://www.filescan.io/api/scan/{task_id}/report?filter=dr:domainResolveResults&filter=f:extractedUrls&filter=f:emulationData&filter=f:strings"
             res = requests.get(url)
 
             if res.status_code==200:
@@ -246,6 +247,7 @@ class FileScan:
                     except:
                         pass
 
+            time.sleep(3)
             url=f"https://www.filescan.io/api/scan/{task_id}/report?filter=f:renderResults"
             res = requests.get(url)
 
