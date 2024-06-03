@@ -40,7 +40,7 @@ Now you can run dynamic analysis for urls and files (Windows/Linux/Android), wit
 ### Blacklist Check
 <img width="678" alt="Screenshot 2024-01-09 at 14 53 39" src="https://github.com/sp34rh34d/CyberSeek/assets/94752464/9d8abc60-fd29-4a89-be1d-9f5b26e7d256">
 
-### Malware Analysis
+### Malware Analysis by hash
 <img width="885" alt="Screenshot 2024-01-09 at 14 54 59" src="https://github.com/sp34rh34d/CyberSeek/assets/94752464/eeae859d-956b-4149-9dc8-46723aa7762c">
 <img width="796" alt="Screenshot 2024-01-09 at 14 55 12" src="https://github.com/sp34rh34d/CyberSeek/assets/94752464/c0663fc0-bd61-4bdf-898e-eece75a9598a">
 
