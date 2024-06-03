@@ -214,13 +214,13 @@ class FileScan:
                     except:
                         pass
 
-            url=f"https://www.filescan.io/api/scan/{task_id}/report?filter=renderResults"
+            url=f"https://www.filescan.io/api/scan/{task_id}/report?filter=f:emulationData"
             res = requests.get(url)
 
             if res.status_code==200:
                 data=res.json()["reports"]
                 for x in data:
-                    data2=data[x]["resources"] #665a284f689418da6f07c3d6
+                    data2=data[x]["resources"]
                     FileScan.domains_resolution(data2)
                     FileScan.extracted_urls(data2)
                     FileScan.emulation_data(data2)
