@@ -5,6 +5,9 @@
 ### Installation
 ```
 git clone https://github.com/sp34rh34d/CyberSeek.git
+cd CyberSeek
+python3 -m venv env
+source env/bin/activate
 pip3 install -r requirements.txt
 cd CyberSeek && chmod +x CyberSeek.py
 ```
