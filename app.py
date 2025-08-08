@@ -49,7 +49,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, 'CyberSeek.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['WTF_CSRF_SSL_STRICT'] = True
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
 db = SQLAlchemy(app)
