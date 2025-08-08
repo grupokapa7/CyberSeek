@@ -13,7 +13,7 @@ cd CyberSeek && chmod +x app.py
 ```
 ### One line instalation
 ```bash
-git clone https://github.com/sp34rh34d/CyberSeek.git && cd CyberSeek && python3 -m venv env && source env/bin/activate && pip3 install -r requirements.txt && cd CyberSeek && chmod +x app.py
+git clone https://github.com/sp34rh34d/CyberSeek.git && cd CyberSeek && python3 -m venv env && source env/bin/activate && pip3 install -r requirements.txt && chmod +x app.py
 ```
 Default username/password `admin:arasaka`
 
