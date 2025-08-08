@@ -4,6 +4,7 @@ from core.utilities import *
 
 class MXToolBox:
     def __init__(self):
+        #this is the temp token when you visit MXToolBox, is not your lucky day bro :(
         self.token = "27eea1cd-e644-4b7b-bebe-38010f55dab3"
         self.agent = UserAgent().random
         self.base_url = "https://mxtoolbox.com"
