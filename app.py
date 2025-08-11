@@ -37,7 +37,7 @@ if 'CyberSeekKey' not in os.environ:
 app.secret_key = os.environ['CyberSeekKey']
 
 app.config.update(
-    PERMANENT_SESSION_LIFETIME = timedelta(minutes),
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=minutes),
     SESSION_COOKIE_SECURE=secure,
     SESSION_COOKIE_HTTPONLY=httponly,
     SESSION_COOKIE_SAMESITE=samesite,
