@@ -82,7 +82,7 @@ CyberSeek now supports dynamic sandbox analysis for URLs and files on various pl
 <img width="1664" height="958" alt="Screenshot 2025-08-08 at 12 13 10 AM" src="https://github.com/user-attachments/assets/3b65011e-d012-443d-8d92-9983e20e427f" />
 
 ### Dynamic Analysis (url)
-<img width="1532" height="959" alt="Screenshot 2025-08-08 at 12 22 02 AM" src="https://github.com/user-attachments/assets/10a2cdd6-36c2-4463-a42b-95a7999d330b" />
+<img width="1898" height="982" alt="Screenshot 2025-08-14 at 9 00 40 AM" src="https://github.com/user-attachments/assets/b865e443-3083-49c9-90b4-fdfabd0ca3ac" />
 
 ### Reputation Lookup (domain/hostname/IP/hash)
 <img width="1665" height="953" alt="Screenshot 2025-08-07 at 11 58 04 PM" src="https://github.com/user-attachments/assets/7598f315-a48d-44d8-9ae3-538ad5a5efd6" />
