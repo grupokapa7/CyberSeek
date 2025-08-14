@@ -79,13 +79,6 @@ async function submit_file(formData,csrf_token) {
                 body: formData
             });
 
-        if(response.status === 413){
-          error.textContent = "File is too large";
-          error.classList = "error";
-          analyzing.style.display="none";
-          return
-        }
-
         const data = await response.json();
         if (data?.success === "False"){
             error.textContent = "Error when try to create task on filescan.io";

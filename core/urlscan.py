@@ -10,14 +10,20 @@ class UrlScanIO:
         self.agent = UserAgent().random
 
     def get_quote(self,):
+        token = self.get_token()
+        if not token:
+            data ={"success":"False","result":f"please set a token for UrlScan.io"}
+            return data
+        
         headers={
-            'User-Agent':self.agent
+            'User-Agent':self.agent,
+            "x-api-key": token
         }
 
         url = self.base_url + '/quotas'
 
         res = self.session.get(url,headers=headers)
-        print("output",res.text)
+        return res.json()
 
     def get_token(self):
         config = configparser.ConfigParser(interpolation=None)
@@ -41,7 +47,14 @@ class UrlScanIO:
             "x-api-key": token
         }
         res = requests.get(url, headers=headers)
-        print(res.status_code,res.text)
+        return res.json()
+    
+    def get_final_verdict(self,query):
+        url = 'https://urlscan.io/api/verdict/' + query
+        headers = {
+            "Content-Type": "application/json"
+        }
+        res = requests.get(url, headers=headers)
         return res.json()
                     
     def scan_url(self,query):
@@ -54,6 +67,7 @@ class UrlScanIO:
 
         payload = {
             "url": query,
+            "visibility":"public"
         }
         headers = {
             "Content-Type": "application/json",
@@ -67,5 +81,5 @@ class UrlScanIO:
             output["success"]="True"
             return output
         else:
-            data ={"success":"False","result":f"Error trying to check {query} on urlscan.io"}
+            data ={"success":"False","result":f"Error trying to check {query} on urlscan.io, {res.text}"}
             return data

@@ -1,12 +1,11 @@
 import requests
-from fake_useragent import UserAgent
 from core.utilities import *
 
 class MXToolBox:
     def __init__(self):
         #this is the temp token when you visit MXToolBox, is not your lucky day bro :(
         self.token = "27eea1cd-e644-4b7b-bebe-38010f55dab3"
-        self.agent = UserAgent().random
+        self.agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0'
         self.base_url = "https://mxtoolbox.com"
     
     def blacklist_check(self,query):

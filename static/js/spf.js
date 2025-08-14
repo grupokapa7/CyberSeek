@@ -8,8 +8,8 @@ function sanitizeText(str) {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;') : '';
+        .replace(/"/g, '')
+        .replace(/'/g, '') : '';
 }
 
 function renderSPFTable(subactions) {

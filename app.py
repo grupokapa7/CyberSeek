@@ -49,6 +49,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, 'CyberSeek.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['WTF_CSRF_SSL_STRICT'] = True
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
 db = SQLAlchemy(app)
@@ -68,7 +69,6 @@ def initialize_database():
             db.session.add(User(username='admin', password=hashed_admin_pw, role='admin'))
             db.session.commit()
 
-
 @app.after_request
 def set_secure_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -76,15 +76,13 @@ def set_secure_headers(response):
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Referrer-Policy'] = 'same-origin'
     response.headers['Content-Security-Policy'] = (
-        "default-src 'self' https://tiles.stadiamaps.com https://*.basemaps.cartocdn.com data: https://tiles.stadiamaps.com https://*.basemaps.cartocdn.com;"
+        "default-src 'self' https://tiles.stadiamaps.com https://*.basemaps.cartocdn.com data:;"
         "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com;"
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;"
-        "font-src 'self' https://fonts.gstatic.com https://fonts.gstatic.comimg-src"
-        "img-src 'self' https://tiles.stadiamaps.com https://*.basemaps.cartocdn.com"
-        
+        "font-src 'self' https://fonts.gstatic.com;"
+        "img-src 'self' https://tiles.stadiamaps.com https://*.basemaps.cartocdn.com https://urlscan.io/screenshots/ data:;"
     )
     return response
-
 
 @app.route('/')
 def home():
@@ -124,6 +122,17 @@ def dashboard_monitoring():
     return render_template('monitoring.html',
                            username= session['username'],
                            role=session.get('role'))
+
+@app.route('/dashboard/settings')
+def dashboard_settings():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    tokens = {}
+    tokens = utilities.get_tokens()
+    return render_template('settings.html',
+                           username= session['username'],
+                           role=session.get('role'),
+                           tokens=tokens)
 
 @app.route('/about')
 def about():
@@ -193,21 +202,29 @@ def analysis_reputation_lookup():
         return redirect(url_for('login'))
     return render_template('analysis/reputationLookup.html')
 
-@app.route('/analysis/url',methods=['GET', 'POST'])
+@app.route('/analysis/url',methods=['GET'])
 def analysis_url():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('analysis/url.html')
 
-@app.route('/analysis/file',methods=['GET', 'POST'])
+@app.route('/analysis/file',methods=['GET'])
 def analysis_file():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('analysis/file.html')
 
+@app.route('/api/urlscanio/quote')
+def urlscanio_quote():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
-@app.route('/api/filescanio/url',methods=['POST'])
-def scanio_url_analysis():
+    urlscanio = UrlScanIO()
+    output = urlscanio.get_quote()
+    return output
+
+@app.route('/api/urlscanio/url',methods=['POST'])
+def urlscanio_analysis():
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -216,8 +233,36 @@ def scanio_url_analysis():
         return {"success": False, "result": "Missing query parameter"}
     
     query = data.get('query', '').strip()
-    scanio = scanio_sandbox()
-    result = scanio.send_url(query)
+    urlscanio = UrlScanIO()
+    result = urlscanio.scan_url(query)
+    return result
+
+@app.route('/api/urlscanio/final_verdict',methods=['POST'])
+def urlscanio_final_verdict():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    data = request.get_json()
+    if not data or 'query' not in data:
+        return {"success": False, "result": "Missing query parameter"}
+    
+    query = data.get('query', '').strip()
+    urlscanio = UrlScanIO()
+    result = urlscanio.get_final_verdict(query)
+    return result
+
+@app.route('/api/urlscanio/report',methods=['POST'])
+def urlscanio_report():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    data = request.get_json()
+    if not data or 'query' not in data:
+        return {"success": False, "result": "Missing query parameter"}
+    
+    query = data.get('query', '').strip()
+    urlscanio = UrlScanIO()
+    result = urlscanio.get_result(query)
     return result
 
 @app.route('/api/filescanio/file',methods=['POST'])
@@ -272,20 +317,6 @@ def scanio_task_status():
     query = data.get('query', '').strip()
     scanio = scanio_sandbox()
     result = scanio.recover_status(query)
-    return result
-
-@app.route('/api/filescanio/url_report',methods=['POST'])
-def scanio_url_report():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    data = request.get_json()
-    if not data or 'query' not in data:
-        return {"success": False, "result": "Missing query parameter"}
-    
-    query = data.get('query', '').strip()
-    scanio = scanio_sandbox()
-    result = scanio.get_url_report(query)
     return result
 
 @app.route('/api/filescanio/file_report',methods=['POST'])
@@ -528,6 +559,19 @@ def update_password():
     user.password = generate_password_hash(new_password)
     db.session.commit()
     return {"success": "True", "result": "Password updated successfully."}
+
+
+@app.route('/api/settings',methods=['POST'])
+def settings_data():
+    if 'username' not in session or session.get('role') != 'admin':
+        return redirect(url_for('dashboard_monitoring'))
+    
+    data = request.get_json() or {}
+    if not data:
+        return {"success": "False", "result": "Missing required fields."}
+
+    output = utilities.save_tokens(data)
+    return output
 
 
 @app.route('/api/user', methods=['POST'])

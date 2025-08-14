@@ -182,7 +182,7 @@ async function CiscoTalos_lookup(query, csrf_token) {
 
 async function vt_lookup(query, csrf_token) {
   const cards = [
-    'VtStats', 'radar', 'vt-engines-card', 'vt-passive-dns-resolution-card',
+    'topcard','VtStats', 'radar', 'vt-engines-card', 'vt-passive-dns-resolution-card',
     'vt-subdomains-card', 'vt-comunication-files-card', 'vt-referrer-files-card',
     'vt-siblings-card', 'vt-contacted-domain-card', 'vt-contacted-ip-card',
     'vt-dropped-files-card', 'vt-categories-card', 'vt-html-meta-card',
@@ -699,26 +699,41 @@ async function renderDroppedFilesTable(query, csrf_token) {
   container.appendChild(table);
 }
 
-
 async function renderOutgoingLinksTable(links) {
-    let html = `<table>
-        <thead>
-        </thead><tbody>`;
+    if (!Array.isArray(links) || links.length === 0) return;
 
-    if (Object.keys(links).length > 0){
-        links.forEach((link, index) => {
-            html += `<tr>
-                <td>${index + 1}</td>
-                <td>${sanitizeText(link)}</td>
-                </tr>`;
-            });
+    const container = document.getElementById("vt-outgoing-links-table-container");
+    const card = document.getElementById("vt-outgoing-links-card");
+    container.textContent = "";
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    ["#", "Link"].forEach(text => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
-        html += `</tbody></table>`;
-        document.getElementById("vt-outgoing-links-table-container").innerHTML = html;
-        document.getElementById("vt-outgoing-links-card").style.display = "block";
-    }
+    const tbody = document.createElement("tbody");
+    links.forEach((link, i) => {
+        const tr = document.createElement("tr");
+
+        const tdIndex = document.createElement("td");
+        tdIndex.textContent = i + 1;
+
+        const tdLink = document.createElement("td");
+        tdLink.textContent = link; 
+        tr.appendChild(tdIndex);
+        tr.appendChild(tdLink);
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    container.appendChild(table);
+    card.style.display = "block";
 }
-
 
 function renderHtmlMetaTable(meta) {
   if (!meta || typeof meta !== 'object' || Object.keys(meta).length === 0) return;

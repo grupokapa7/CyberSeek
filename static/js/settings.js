@@ -8,11 +8,12 @@ function sanitizeText(str) {
         .replace(/'/g, '&#39;');
     }
 
-async function save_tokens(token) {
+async function save_tokens(token,csrf_token) {
     const response = await fetch("/api/settings", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf_token
             },
         body: JSON.stringify({ token_scanurl: token })
     });
@@ -28,5 +29,6 @@ async function save_tokens(token) {
 }
 
 async function set_tokens(tokens_data) {
-    document.getElementById('token_scanurl').value = sanitizeText(tokens_data?.Scanurl?.token_scanurl)
+    const urlscanio = document.getElementById('token_scanurl');
+    urlscanio.value = sanitizeText(tokens_data?.Scanurl?.token_scanurl)
 }
