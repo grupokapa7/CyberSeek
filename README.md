@@ -1,5 +1,5 @@
 
-# CyberSeek v3.0
+# CyberSeek v3.1
 CyberSeek is an open source project that empowers users with a broad range of cybersecurity analysis tools, combining the power of various threat intelligence sources into one unified platform.
 
 ### Installation
@@ -9,7 +9,7 @@ cd CyberSeek
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
-cd CyberSeek && chmod +x app.py
+chmod +x app.py
 ```
 ### One line instalation
 ```bash
