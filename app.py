@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from io import BytesIO
 import secrets, os, hashlib, sys
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
